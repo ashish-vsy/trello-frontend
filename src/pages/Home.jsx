@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-import Header from '../components/Header';
+import Navbar from '../components/Navbar.jsx';
 import Kanban from '../components/Kanban';
 import { GetUserByUserid } from '../services/api.user';
 
 function Home() {
   const navigate = useNavigate();
-  const [userData, setUserdata] = useState([]);
+  const [userData, setUserdata] = useState({});
   const userid = sessionStorage.getItem('userid');
+  const orgid = sessionStorage.getItem('orgid');
 
   useEffect(() => {
-    if (!userid) {
-
-      navigate('/login-org');
+    if (!userid || !orgid || userid === 'undefined' || orgid === 'undefined') {
+      navigate('/login');
       return;
     }
-
     if (userid) {
       GetUserByUserid(userid).then((res) => {
         if (res.status) {
@@ -31,14 +30,14 @@ function Home() {
     } else {
       toast.error("User ID missing. Please log in again.");
       sessionStorage.clear();
-      navigate('/login-org');
+      navigate('/login');
     }
   }, [userid, navigate]);
 
   return (
     <div className='bg-neutral-900'>
       <Toaster />
-      <Header userDetails={userData?.[0]} />
+      <Navbar userDetails={userData} />
       <Kanban />
     </div>
   );

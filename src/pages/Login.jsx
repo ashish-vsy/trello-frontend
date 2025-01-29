@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaBuilding } from "react-icons/fa";
+
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import loginimg from "../assets/login_img.png";
-import { OauthLogin, LoginAPI } from "../services/api.user";
+import { LoginAPI } from "../services/api.user";
 import toast, { Toaster } from "react-hot-toast";
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [orgName, setOrgName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -35,14 +37,17 @@ function Login() {
     const reqbody = {
       email: email,
       password: password,
+      orgname: orgName,
     };
     LoginAPI(reqbody).then((res) => {
-      if (res.status) {
+      console.log(res, "res");
+      if (res.status === 1) {
         toast.success("Login successful!");
-        sessionStorage.setItem("token", res.token);
-        sessionStorage.setItem("userid", res.data?.[0].userid);
+        sessionStorage.setItem("userid", res.data?.id);
+        sessionStorage.setItem("orgid", res.data?.orgid);
         navigate("/home");
       } else {
+        console.log(res);
         toast.error(res.message);
       }
     });
@@ -64,6 +69,20 @@ function Login() {
         <div className="flex-1 p-8 justify-center flex flex-col text-center text-white">
           <h1 className="font-bold text-3xl mb-4">Welcome to Trello</h1>
           <p className="text-gray-200 mb-8">Sign in to manage your projects and tasks easily!</p>
+
+          <div className="mb-5">
+            <div className="flex items-center gap-2 mb-2">
+              <FaBuilding />
+              <label className="font-semibold">Enter Organization Name</label>
+            </div>
+            <input
+              type="text"
+              placeholder="Enter your organization name"
+              className="w-full px-4 py-3 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-300"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+            />
+          </div>
 
           <div className="mb-5">
             <div className="flex items-center gap-2 mb-2">
@@ -96,7 +115,11 @@ function Login() {
                 className="absolute top-1/2  right-4 transform -translate-y-1/2 cursor-pointer text-gray-400"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                {showPassword ? (
+                  <AiFillEyeInvisible className="mr-2 w-5 h-5" />
+                ) : (
+                  <AiFillEye className="mr-2 w-5 h-5" />
+                )}
               </div>
             </div>
           </div>

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import Card from './Card';
-import AddCard from './AddCard';
-import DropIndicator from './DropIndicator';
-import { UpdateTasksbyTaskid } from "../Api";
+import Card from './Card.jsx';
+import AddCard from './AddCard.jsx';
+import DropIndicator from './DropIndicator.jsx';
+import { UpdateTasksbyTaskid } from "../services/api.task.js";
 
 function Column({ title, headingColor, cards, column, setCards, setFetch, userslist }) {
-
     const [active, setActive] = useState(false);
 
     const handleDragStart = (e, card) => {
@@ -27,13 +25,14 @@ function Column({ title, headingColor, cards, column, setCards, setFetch, usersl
 
         if (before !== cardId) {
             let copy = [...cards];
-            let cardToTransfer = copy.find((c) => c.taskid === cardId);
+            let cardToTransfer = copy.find((c) => c.id === cardId);
 
             if (!cardToTransfer) return;
-            cardToTransfer = { ...cardToTransfer, listname: column };
-            UpdateTasksbyTaskid(cardId, { listname: column }).then((res) => {
+            cardToTransfer = { ...cardToTransfer, status: column };
+            UpdateTasksbyTaskid(cardId, { status: column }).then((res) => {
                 if (res.status) {
                     setFetch((prev) => !prev);
+                  
                 }
             })
             copy = copy.filter((c) => c.taskid !== cardId);
@@ -109,21 +108,21 @@ function Column({ title, headingColor, cards, column, setCards, setFetch, usersl
         setActive(false);
     };
 
-    const filteredCards = cards.filter((c) => c.listname === column);
+    const filteredCards = cards.filter((c) => c.status === column);
 
     return (
-        <div className="w-[275px] shrink-0">
+        <div className="w-[275px] shrink-0 overflow-y-scroll">
             <div className="mb-3 flex items-center justify-between">
-                <h3 className={`font-medium text-lg ${headingColor}`}>{title}<span className="text-sm"> ({filteredCards.length})</span></h3>
+                <h3 className={`font-medium text-lg  ${headingColor}`}>{title}<span className="text-sm"> ({filteredCards.length})</span></h3>
             </div>
             <div
                 onDrop={handleDragEnd}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
-                className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"}`}
+                className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0 "}`}
             >
                 {filteredCards.map((c) => {
-                    return <Card key={c.taskid} userslist={userslist} id={c.taskid} title={c.taskname} taskdetails={c} handleDragStart={handleDragStart} setFetch={setFetch} />;
+                    return <Card key={c.id} userslist={userslist} id={c.id} title={c.taskname} taskdetails={c} handleDragStart={handleDragStart} setFetch={setFetch} />;
                 })}
                 <DropIndicator beforeId={null} column={column} />
                 <AddCard column={column} setCards={setCards} setFetch={setFetch} />

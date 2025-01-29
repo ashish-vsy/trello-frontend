@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaBuilding } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import registerImg from "../assets/login_img.png"; 
+import registerImg from "../assets/login_img.png";
 import { SignUp } from "../services/api.user";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -14,15 +14,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-      navigate("/home");
-    }
-    if (!sessionStorage.getItem("orgid")) {
-      navigate("/register-org");
-    }
-  }, []);
+  const [orgName, setOrgName] = useState("");
 
   const handleRegister = () => {
     const reqbody = {
@@ -30,15 +22,15 @@ function Register() {
       lastname: lastname,
       email: email,
       password: password,
-      orgid: sessionStorage.getItem("orgid"),
+      orgName: orgName,
     };
 
     SignUp(reqbody).then((res) => {
       if (res.status) {
         toast.success("Successfully registered!");
-        sessionStorage.setItem("token", res.token);
-        sessionStorage.setItem("userid", res.data?.[0].userid);
-        navigate("/home");
+        sessionStorage.setItem("userid", res.data?.id);
+        sessionStorage.setItem("orgid", res.data?.orgid);
+        navigate("/login");
       } else {
         toast.error(res.message);
       }
@@ -63,6 +55,20 @@ function Register() {
           <p className="text-gray-200 mb-8">
             Ready to get started? Create your account to manage projects and tasks efficiently!
           </p>
+
+          <div className="mb-5">
+            <div className="flex items-center gap-2 mb-2">
+              <FaBuilding />
+              <label className="font-semibold">Enter Organization Name</label>
+            </div>
+            <input
+              type="text"
+              placeholder="Enter your organization name"
+              className="w-full px-4 py-3 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-300"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+            />
+          </div>
 
           <div className="mb-4">
             <div className="flex items-center gap-2 mb-2">
@@ -123,7 +129,11 @@ function Register() {
                 className="absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                {showPassword ? (
+                  <AiFillEyeInvisible className="mr-2 w-5 h-5" />
+                ) : (
+                  <AiFillEye className="mr-2 w-5 h-5" />
+                )}
               </div>
             </div>
           </div>
@@ -144,11 +154,7 @@ function Register() {
         </div>
 
         <div className="w-1/2 flex items-center justify-center">
-          <img
-            src={registerImg}
-            alt="Register Illustration"
-            className="rounded-lg shadow-lg w-3/4"
-          />
+          <img src={registerImg} alt="Register Illustration" className="rounded-lg shadow-lg w-3/4" />
         </div>
       </div>
     </div>

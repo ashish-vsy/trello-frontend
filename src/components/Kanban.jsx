@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
+import Board from "./Board.jsx";
 
-const DropIndicator = ({ beforeId, column }) => {
+function Kanban() {
     return (
-      <div
-        data-before={beforeId || "-1"}
-        data-column={column}
-        className="my-0.5 h-0.5 w-full bg-violet-400 opacity-0"
-      />
+        <div className="h-screen w-full bg-neutral-900 text-neutral-200">
+            <Board />
+        </div>
     );
-  };
 
-export default DropIndicator;
+}
+
+export default Kanban;
