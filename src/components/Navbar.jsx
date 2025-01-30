@@ -6,6 +6,7 @@ import { ChangePassword, DeleteUser, UpdateUserByUserid } from "../services/api.
 import toast from "react-hot-toast";
 import { FaPowerOff, FaEdit, FaTrashAlt, FaLock } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import logo from "../assets/logo.png";
 
 function Navbar({ userDetails }) {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Navbar({ userDetails }) {
   const [lastname, setLastname] = useState("");
   const [profilecolor, setProfilecolor] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (userDetails) {
@@ -138,23 +140,25 @@ function Navbar({ userDetails }) {
     );
   };
 
-  const handleDeleteProfile = () => {
-    const confrim = window.confirm("Are you sure?");
-    if (confrim) {
-      DeleteUser(sessionStorage.getItem("userid")).then((res) => {
-        if (res.status) {
-          toast.success("Your profile has been removed");
-          handleLogout();
-        } else {
-          toast.error(res.message);
-        }
-      });
+  const handleDeleteProfile = async () => {
+    const res = await DeleteUser(sessionStorage.getItem("userid"));
+    if (res.status) {
+      toast.success("Your profile has been removed");
+      handleLogout();
+    } else {
+      toast.error(res.message);
     }
+    setIsDeleteOpen(false);
   };
 
   return (
     <div className="w-full h-16  flex flex-1 justify-between bg-[#586ca8] items-center fixed top-0 z-50">
-      <div className="text-white font-semibold text-lg ml-5">{userDetails?.orgname?.toUpperCase()} WORKSPACE</div>
+      <div className="text-white font-semibold text-lg ml-5 flex items-center gap-4">
+        <div className="w-12 h-12 ">
+          <img src={logo} className="rounded-md" alt="logo" />
+        </div>
+        {userDetails?.orgname?.toUpperCase()} WORKSPACE
+      </div>
       <div className="flex justify-center items-center mx-5">
         <Menu>
           <MenuButton>
@@ -188,7 +192,7 @@ function Navbar({ userDetails }) {
             </MenuItem>
             <MenuItem>
               <button
-                onClick={() => handleDeleteProfile()}
+                onClick={() => setIsDeleteOpen(true)}
                 className="text-red-500 group flex w-full items-center gap-2 rounded-lg py-1.5 px-3  "
               >
                 <FaTrashAlt className="h-5 w-5" /> Delete Profile
@@ -197,6 +201,27 @@ function Navbar({ userDetails }) {
           </MenuItems>
         </Menu>
       </div>
+
+      <Dialog open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} className="relative z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <DialogPanel className="w-full max-w-sm bg-gray-800 p-5 rounded-lg shadow-lg text-gray-200">
+            <DialogTitle className="text-lg font-medium">Are you sure?</DialogTitle>
+            <p className="text-sm text-gray-400 mt-2">This action cannot be undone.</p>
+            <div className="mt-4 flex justify-end gap-3">
+              <button
+                onClick={() => setIsDeleteOpen(false)}
+                className="px-4 py-1.5 bg-gray-600 rounded-lg hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button onClick={handleDeleteProfile} className="px-4 py-1.5 bg-red-600 rounded-lg hover:bg-red-700">
+                Delete
+              </button>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
+
       <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4">
