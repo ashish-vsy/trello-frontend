@@ -1,4 +1,6 @@
-const api_route = "http://localhost:4000/api";
+
+const api_route = import.meta.env.VITE_API_ROUTE;
+
 export const CreateTask = (reqbody) => {
     const url = `${api_route}/task/add`;
     const fetchOptions = {
@@ -73,7 +75,6 @@ export const UpdateTasksbyTaskid = (taskid, reqbody) => {
 };
 
 export const AssignTask = (reqbody) => {
-    console.log(reqbody, 'making ass casll');
     const url = `${api_route}/task/assign`;
     const fetchOptions = {
         method: "POST",

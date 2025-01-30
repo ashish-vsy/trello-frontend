@@ -4,7 +4,7 @@ import { DeleteTask } from "../services/api.task.js";
 import toast from "react-hot-toast";
 import { FaFire, FaTrash } from "react-icons/fa";
 
-const BurnBarrel = ({ setCards, setFetch }) => {
+const BurnBarrel = ({setFetch }) => {
     const [active, setActive] = useState(false);
 
     const handleDragOver = (e) => {
@@ -36,7 +36,7 @@ const BurnBarrel = ({ setCards, setFetch }) => {
             onDragLeave={handleDragLeave}
             className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded-md border border-1 text-3xl ${active
                 ? "border-red-800 bg-red-800/20 text-red-500"
-                : "border-blue-100  bg-white text-blue-200"
+                : "border-[#494a51]  bg-[#34353a] text-gray-200"
                 }`}
         >
             {active ?

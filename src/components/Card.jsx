@@ -18,10 +18,11 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
   const [priority, setPriority] = useState(["high", "medium", "low"]);
   const [createdby, setCreatedby] = useState("");
   const [profileColor, setProfileColor] = useState("");
+  const [hover, setHover] = useState(false);
+  const [cardHover, setCardHover] = useState(false);
 
   useEffect(() => {
     if (taskdetails) {
-      console.log(taskdetails, "taskdetails");
       setTaskname(title);
       setTaskdescription(taskdetails.taskdescription);
       setDuedate(taskdetails.duedate);
@@ -30,21 +31,29 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
       setProfileColor(taskdetails.profilecolor);
     }
   }, [taskdetails]);
-
   useEffect(() => {
-    getAssignedUsersByTaskId(id).then((res) => {
-      if (res.status) {
-        const new_data = res.data.map((user) => {
-          return {
+    const fetchData = async () => {
+      try {
+        const res = await getAssignedUsersByTaskId(id);
+
+        if (res.status) {
+          const usersArray = Array.isArray(res.data) ? res.data : [];
+          const new_data = usersArray.map((user) => ({
             id: user.id,
             name: `${user.firstname} ${user.lastname}`,
-          };
-        });
-        setSelectedPeople(new_data);
-      } else {
+          }));
+
+          setSelectedPeople(new_data);
+        } else {
+          setSelectedPeople([]);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
         setSelectedPeople([]);
       }
-    });
+    };
+
+    fetchData();
   }, [id]);
 
   const people = userslist.map((user) => {
@@ -79,6 +88,10 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
         toast.error(res1.message);
       }
 
+      if (selectedPeople.length === 0) {
+        return;
+      }
+
       const assignUsersReqbody = {
         userid: selectedPeople,
         taskid: id,
@@ -87,6 +100,7 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
       const res2 = await AssignTask(assignUsersReqbody);
       if (res2.status) {
         toast.success("Assigned Task!");
+        setFetch((prev) => !prev);
       } else {
         toast.error(res2.message);
       }
@@ -94,17 +108,6 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
       console.error("Error in handleConfirm:", error);
       toast.error("Something went wrong!");
     }
-  };
-
-  const handleAssigne = (value) => {
-    AssignTask(id, { userid: value }).then((res) => {
-      if (res.status) {
-        toast.success("Assigned Task!");
-        setFetch((prev) => !prev);
-      } else {
-        toast.error(res.message);
-      }
-    });
   };
 
   function open() {
@@ -135,7 +138,7 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
         layoutId={id}
         draggable="true"
         onDragStart={(e) => handleDragStart(e, { title, id, column })}
-        className="cursor-pointer rounded bg-white text-black p-3 border active:cursor-grabbing"
+        className="cursor-pointer rounded bg-[#34353a] text-gray-200 p-3 border border-[#494a51] active:cursor-grabbing"
         onClick={open}
       >
         {taskdetails.priority?.[0] ? (
@@ -156,8 +159,17 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
         ) : (
           <></>
         )}
-        <div className="flex flex-1 justify-end">
+        <div
+          className="relative flex flex-1 justify-end"
+          onMouseEnter={() => setCardHover(true)}
+          onMouseLeave={() => setCardHover(false)}
+        >
           <Avatar small={true} firstname={createdby} color={profileColor} />
+          {cardHover && (
+            <p className="absolute bottom-full transform mb-1 text-white bg-blue-400 px-2 py-1 rounded-md text-sm">
+              {createdby}
+            </p>
+          )}
         </div>
       </motion.div>
       <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
@@ -165,85 +177,125 @@ const Card = ({ title, id, column, handleDragStart, taskdetails, setFetch, users
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
-              className="w-full max-w-md rounded-xl border border-[#404040] p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              className="w-full max-w-md rounded-xl border border-gray-500 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
             >
-              <DialogTitle as="h3" className="text-base/7 font-medium  text-black">
+              <DialogTitle as="h3" className="text-base/7 font-medium  text-gray-200">
                 Edit Task
               </DialogTitle>
-              <div className="my-2 mt-5">
-                <div className="flex text-sm ">Task</div>
+              <div className="my-2 mt-5 text-gray-200 ">
+                <div className="flex text-sm mb-1">Task</div>
                 <input
-                  className=" mb-2 w-full px-4 py-2  rounded-xl text-md border focus:outline-none focus:ring-0"
+                  className=" mb-2 w-full px-4 py-2 bg-gray-700  rounded-xl text-md  focus:outline-none focus:ring-0"
                   value={taskname}
                   onChange={(e) => setTaskname(e.target.value)}
                 ></input>
               </div>
-              <div className="my-2">
-                <div className="flex text-sm ">Task Description</div>
+              <div className="my-2 text-gray-200 ">
+                <div className="flex text-sm mb-1 ">Task Description</div>
                 <textarea
-                  className="mb-2 w-full px-4 py-2  rounded-xl border text-md focus:outline-none focus:ring-0"
+                  className="mb-2 w-full px-4 py-2 bg-gray-700  rounded-xl  text-md focus:outline-none focus:ring-0"
                   value={taskdescription}
                   onChange={(e) => setTaskdescription(e.target.value)}
                 ></textarea>
               </div>
-              <div className="my-2">
-                <div className="flex text-sm ">Due Date</div>
+              <div className="my-2 text-gray-200 ">
+                <div className="flex text-sm mb-1">Due Date</div>
                 <input
                   type="datetime-local"
-                  className=" mb-2 w-full px-4 py-2  rounded-xl border text-md focus:outline-none focus:ring-0"
+                  className=" mb-2 w-full px-4 py-2 bg-gray-700 rounded-xl  text-md focus:outline-none focus:ring-0"
                   value={duedate}
                   onChange={(e) => setDuedate(e.target.value)}
                 ></input>
               </div>
-              <div className="my-2">
+              <div className="my-2 text-gray-200">
                 <Field>
-                  <div className="flex gap-3 text-sm  items-center">
+                  <div className="flex gap-3 text-sm items-center mb-1">
                     Priority
                     <div
-                      target={priority ?? ""}
-                      style={{ backgroundColor: getColor(priority ?? "") }}
-                      className="w-10 h-2 rounded-full"
+                      className={clsx(
+                        "w-10 h-2 rounded-full",
+                        priority === "high" ? "bg-red-500" : priority === "medium" ? "bg-yellow-500" : "bg-green-500"
+                      )}
                     ></div>
                   </div>
                   <Select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value)}
                     className={clsx(
-                      "block w-full appearance-none rounded-lg border  py-1.5 px-3 text-sm/6 ",
-                      "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
-                      "*:text-black"
+                      "block w-full appearance-none rounded-lg  py-2 px-4 text-sm",
+                      "bg-gray-700 text-gray-200",
+                      "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
                     )}
                   >
-                    <option value="high">HIGH</option>
-                    <option value="medium">MEDIUM</option>
-                    <option value="low">LOW</option>
+                    <option className="bg-gray-700 text-gray-200" value="high">
+                      HIGH
+                    </option>
+                    <option className="bg-gray-700 text-gray-200" value="medium">
+                      MEDIUM
+                    </option>
+                    <option className="bg-gray-700 text-gray-200" value="low">
+                      LOW
+                    </option>
                   </Select>
                 </Field>
               </div>
               <div className="my-2">
                 <div>
-                  <div className="flex gap-3 text-sm items-center">Assign To</div>
+                  <div className="flex gap-3 text-sm mb-1 items-center text-gray-200">Assign To</div>
                   <Multiselect
                     options={people}
                     selectedValues={selectedPeople}
                     onSelect={onSelect}
                     onRemove={onRemove}
                     displayValue="name"
+                    style={{
+                      multiselectContainer: {
+                        backgroundColor: "#374151",
+                        color: "#E5E7EB",
+                      },
+                      optionContainer: {
+                        backgroundColor: "#374151",
+                        border: "none",
+                      },
+                      option: {
+                        color: "#E5E7EB",
+                        backgroundColor: "#374151",
+                      },
+                      hover: {
+                        backgroundColor: "#4B5563",
+                        color: "#E5E7EB",
+                      },
+                      searchBox: {
+                        border: "1px solid #515252",
+                        backgroundColor: "#374151",
+                        color: "#E5E7EB",
+                        borderRadius: "5px",
+                      },
+                    }}
                   />
                 </div>
               </div>
-              <div className="my-4 flex gap-2 items-center ">
-                Created By <Avatar small={true} firstname={createdby} color={profileColor} />
+
+              <div className="my-4 flex gap-2 items-center text-gray-200   ">
+                <span>Created By</span>
+                <div className="relative" onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+                  <Avatar small={true} firstname={createdby} color={profileColor} />
+                  {hover && (
+                    <p className="absolute bottom-full left-1/2 transform  mb-1  bg-blue-400 px-2 py-1 rounded-md text-sm">
+                      {createdby}
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="mt-4 flex justify-end flex-1 gap-5">
                 <Button
-                  className="inline-flex mx-2 items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
+                  className="inline-flex mx-2 items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none   "
                   onClick={close}
                 >
                   Cancel
                 </Button>
                 <Button
-                  className="inline-flex items-center gap-2 rounded-md bg-pink-500 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-pink-400 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-pink-500"
+                  className="inline-flex items-center gap-2 rounded-md bg-[#586ca8] py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none   "
                   onClick={() => handleConfirm()}
                 >
                   Confirm

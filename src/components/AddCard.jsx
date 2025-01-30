@@ -47,20 +47,20 @@ const AddCard = ({ column, setFetch }) => {
             onChange={(e) => setText(e.target.value)}
             autoFocus
             placeholder="Add new task..."
-            className="w-full rounded border border-blue-200 bg-blue-400/20 p-3 text-sm text-neutral-900 placeholder-blue-300 focus:outline-0"
+            className="w-full rounded border border-gray-400 bg-blue-200/20 p-3 text-sm text-neutral-200 placeholder-[#6778ac] focus:outline-0"
           />
           <div className="mt-1.5 flex items-center justify-end gap-1.5">
             <button
               type="button" 
               onClick={() => setAdding(false)}
-              className="flex items-center gap-2 border px-3 py-1.5 text-xs text-neutral-500 transition-colors hover:text-neutral-600"
+              className="flex items-center gap-2  rounded  px-3 py-1.5 text-xs bg-neutral-700 transition-colors hover:bg-neutral-600"
             >
               <span>Close</span>
               <FaTimes className="h-4 w-4" />
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 rounded bg-neutral-50 px-3 py-1.5 text-xs text-neutral-950 transition-colors hover:bg-neutral-300"
+              className="flex items-center gap-1.5 rounded  px-3 py-1.5 text-xs bg-neutral-500 transition-colors hover:bg-neutral-600"
             >
               <span>Add</span>
               <FaPlus className="h-4 w-4" />

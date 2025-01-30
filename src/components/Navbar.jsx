@@ -80,31 +80,31 @@ function Navbar({ userDetails }) {
             <div className="flex min-h-full items-center justify-center p-4">
               <DialogPanel
                 transition
-                className="w-full max-w-md rounded-xl bg-white text-black p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+                className="w-full max-w-md rounded-xl border-gray-500 border bg-[#2a2a2a] text-gray-200 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
               >
                 <DialogTitle as="h3" className="font-medium text-lg ">
                   Change Password
                 </DialogTitle>
                 <div className="my-2 mt-5">
-                  <div className="flex items-center text-sm ">
+                  <div className="flex items-center text-sm  mb-2">
                     <FaLock className="mr-2" />
                     Old Password
                   </div>
                   <input
                     type="password"
-                    className="text-gray-900 mb-2 w-full px-4 py-2 rounded-xl focus:outline-none focus:ring-0 border border-1"
+                    className="bg-gray-700 mb-2 w-full px-4 py-2 rounded-xl focus:outline-none focus:ring-0"
                     onChange={(e) => setOldpassword(e.target.value)}
                   />
                 </div>
                 <div className="my-2 mt-5">
-                  <div className="flex items-center text-sm ">
+                  <div className="flex items-center text-sm mb-2 ">
                     <FaLock className="mr-2" />
                     New Password
                   </div>
-                  <div className="mb-2 w-full px-4 py-2 bg-white/10 rounded-xl flex border-1 border">
+                  <div className="mb-2 w-full px-4 py-2 bg-gray-700 rounded-xl flex ">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className="text-gray-900 bg-transparent text-sm w-full focus:outline-none focus:ring-0"
+                      className=" bg-transparent text-sm w-full focus:outline-none focus:ring-0"
                       onChange={(e) => setNewpassword(e.target.value)}
                     />
                     <div onClick={() => setShowpassword(!showPassword)} className="cursor-pointer text-gray-400">
@@ -118,13 +118,13 @@ function Navbar({ userDetails }) {
                 </div>
                 <div className="mt-4 flex justify-end gap-5">
                   <Button
-                    className="inline-flex mx-2 items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-600"
+                    className="inline-flex mx-2 items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none "
                     onClick={() => setIsOpenpass(false)}
                   >
                     Cancel
                   </Button>
                   <Button
-                    className="inline-flex items-center gap-2 rounded-md bg-pink-600 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-pink-500"
+                    className="inline-flex items-center gap-2 rounded-md bg-[#586ca8] py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none "
                     onClick={handleConfirmPassword}
                   >
                     Confirm
@@ -153,12 +153,7 @@ function Navbar({ userDetails }) {
   };
 
   return (
-    <div
-      className="w-full h-16  flex flex-1 justify-between items-center fixed top-0 z-50"
-      style={{
-        background: "linear-gradient(to right, #2985ed, #A592E6, #F5A9E1, #FC85C5)",
-      }}
-    >
+    <div className="w-full h-16  flex flex-1 justify-between bg-[#586ca8] items-center fixed top-0 z-50">
       <div className="text-white font-semibold text-lg ml-5">{userDetails?.orgname?.toUpperCase()} WORKSPACE</div>
       <div className="flex justify-center items-center mx-5">
         <Menu>
@@ -168,20 +163,17 @@ function Navbar({ userDetails }) {
           <MenuItems
             transition
             anchor="bottom end"
-            className="w-52 origin-top-right rounded-xl border border-gray-200 shadow bg-white p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+            className="w-52 origin-top-right rounded-xl border-gray-500 border  shadow bg-[#2a2a2a] text-gray-200 p-1 text-sm/6  transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-50 "
           >
             <MenuItem>
-              <button
-                onClick={() => open()}
-                className="text-black group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-gray-100"
-              >
-                <FaEdit className="h-5 w-5" /> Edit
+              <button onClick={() => open()} className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3  ">
+                <FaEdit className="h-5 w-5 " /> Edit
               </button>
             </MenuItem>
             <MenuItem>
               <button
                 onClick={() => setIsOpenpass(true)}
-                className="text-black group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-gray-100"
+                className=" group flex w-full items-center gap-2 rounded-lg py-1.5 px-3  "
               >
                 <FaLock className="h-5 w-5" /> Change Password
               </button>
@@ -189,7 +181,7 @@ function Navbar({ userDetails }) {
             <MenuItem>
               <button
                 onClick={() => handleLogout()}
-                className="text-black group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-gray-100"
+                className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3  "
               >
                 <FaPowerOff className="h-5 w-5" /> Logout
               </button>
@@ -197,7 +189,7 @@ function Navbar({ userDetails }) {
             <MenuItem>
               <button
                 onClick={() => handleDeleteProfile()}
-                className="text-red-500 group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-gray-100"
+                className="text-red-500 group flex w-full items-center gap-2 rounded-lg py-1.5 px-3  "
               >
                 <FaTrashAlt className="h-5 w-5" /> Delete Profile
               </button>
@@ -210,9 +202,9 @@ function Navbar({ userDetails }) {
           <div className="flex min-h-full items-center justify-center p-4">
             <DialogPanel
               transition
-              className="w-full max-w-md rounded-xl bg-white text-black p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
+              className="w-full max-w-md rounded-xl border-gray-500 border bg-[#2a2a2a] text-gray-200 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
             >
-              <DialogTitle as="h3" className="font-medium text-lg text-black">
+              <DialogTitle as="h3" className="font-medium text-lg">
                 Update your details
               </DialogTitle>
               <div className="flex flex-1 justify-center mt-5">
@@ -231,30 +223,30 @@ function Navbar({ userDetails }) {
                 )}
               </div>
               <div className="my-2 mt-5">
-                <div className="flex items-center text-sm ">Firstname</div>
+                <div className="flex items-center text-sm mb-2 ">First Name</div>
                 <input
-                  className="text-gray-900 mb-2 w-full px-4 py-2 rounded-xl focus:outline-none focus:ring-0 border border-1"
+                  className="bg-gray-700 mb-2 w-full px-4 py-2 rounded-xl focus:outline-none focus:ring-0  "
                   value={firstname}
                   onChange={(e) => setFirstname(e.target.value)}
                 />
               </div>
               <div className="my-2 mt-5">
-                <div className="flex items-center text-sm ">Lastname</div>
+                <div className="flex items-center text-sm mb-2 ">Last Name</div>
                 <input
-                  className="text-gray-900 mb-2 w-full px-4 py-2 rounded-xl focus:outline-none focus:ring-0 border border-1"
+                  className="bg-gray-700 mb-2 w-full px-4 py-2 rounded-xl focus:outline-none focus:ring-0 "
                   value={lastname}
                   onChange={(e) => setLastname(e.target.value)}
                 />
               </div>
               <div className="mt-4 flex justify-end gap-5">
                 <Button
-                  className="inline-flex mx-2 items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-600"
+                  className="inline-flex mx-2 items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none "
                   onClick={close}
                 >
                   Cancel
                 </Button>
                 <Button
-                  className="inline-flex items-center gap-2 rounded-md bg-pink-600 py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-pink-500"
+                  className="inline-flex items-center gap-2 rounded-md bg-[#586ca8] py-1.5 px-3 text-sm font-semibold text-white shadow-inner shadow-white/10 focus:outline-none "
                   onClick={handleConfirm}
                 >
                   Confirm

@@ -1,7 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
-const api_route = process.env.API_ROUTE;
-
+const api_route = import.meta.env.VITE_API_ROUTE;
 export const getOrganizationById = (orgId) => {
     const url = `${api_route}/organization/${orgId}`;
     const fetchOptions = {
