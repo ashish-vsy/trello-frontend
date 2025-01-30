@@ -2,21 +2,23 @@
 const api_route = import.meta.env.VITE_API_ROUTE;
 
 export const CreateTask = (reqbody) => {
+    const JWT = sessionStorage.getItem('token');
     const url = `${api_route}/task/add`;
     const fetchOptions = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
         body: JSON.stringify(reqbody)
     };
     return fetch(url, fetchOptions)
       .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, message: retured_res.message };
+            return { status: 1, message: returned_res.message };
         })
       )
       .catch((error) => {
@@ -26,20 +28,22 @@ export const CreateTask = (reqbody) => {
 };
 
 export const GetTaskDetailsByTaskid = (taskid) => {
+    const JWT = sessionStorage.getItem('token');
     const url = `${api_route}/task/${taskid}`;
     const fetchOptions = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
     };
     return fetch(url, fetchOptions)
     .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, message: retured_res.message };
+            return { status: 1, message: returned_res.message };
         })
       )
         .catch((error) => {
@@ -51,21 +55,24 @@ export const GetTaskDetailsByTaskid = (taskid) => {
 
 
 export const UpdateTasksbyTaskid = (taskid, reqbody) => {
+    const JWT = sessionStorage.getItem('token');
     const url = `${api_route}/task/${taskid}`;
+    
     const fetchOptions = {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
         body: JSON.stringify(reqbody)
     };
     return fetch(url, fetchOptions)
     .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, message: retured_res.message };
+            return { status: 1, message: returned_res.message };
         })
       )
         .catch((error) => {
@@ -75,21 +82,23 @@ export const UpdateTasksbyTaskid = (taskid, reqbody) => {
 };
 
 export const AssignTask = (reqbody) => {
+    const JWT = sessionStorage.getItem('token');
     const url = `${api_route}/task/assign`;
     const fetchOptions = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
         body: JSON.stringify(reqbody)
     };
     return fetch(url, fetchOptions)
     .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, message: retured_res.message };
+            return { status: 1, message: returned_res.message };
         })
       )
         .catch((error) => {
@@ -99,20 +108,22 @@ export const AssignTask = (reqbody) => {
 };
 
 export const DeleteTask = (taskid) => {
+    const JWT = sessionStorage.getItem('token');
     const url = `${api_route}/task/${taskid}`;
     const fetchOptions = {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
     };
     return fetch(url, fetchOptions)
     .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, message: retured_res.message };
+            return { status: 1, message: returned_res.message };
         })
       )
         .catch((error) => {
@@ -124,19 +135,23 @@ export const DeleteTask = (taskid) => {
 export const getAllTasks = () => {
     const orgid = sessionStorage.getItem('orgid');
     const url = `${api_route}/task/org/${orgid}`;
+    const JWT = sessionStorage.getItem('token');
+    console.log(JWT, "JWT");
+    
     const fetchOptions = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
     };
     return fetch(url, fetchOptions)
       .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, data: retured_res };
+            return { status: 1, data: returned_res };
         })
       )
       .catch((error) => {
@@ -148,19 +163,21 @@ export const getAllTasks = () => {
 
 export const getAssignedUsersByTaskId = (taskid) => {
     const url = `${api_route}/task/assign/${taskid}`;
+    const JWT = sessionStorage.getItem('token');
     const fetchOptions = {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${JWT}`,
         },
     };
     return fetch(url, fetchOptions)
       .then((response) =>
-        response.json().then(retured_res => {
+        response.json().then(returned_res => {
             if (response.status === 400) {
-                return { status: 0, message: retured_res.message };
+                return { status: 0, message: returned_res.message };
             }
-            return { status: 1, data: retured_res };
+            return { status: 1, data: returned_res };
         })
       )
       .catch((error) => {

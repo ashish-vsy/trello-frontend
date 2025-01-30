@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaBuilding } from "react-icons/fa";
-
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import loginimg from "../assets/login_img.png";
 import { LoginAPI } from "../services/api.user";
@@ -21,17 +20,7 @@ function Login() {
     }
   }, []);
 
-  const handleCallbackResponse = (response) => {
-    OauthLogin({ credential: response.credential }).then((res) => {
-      if (res.status) {
-        toast.success("Login successful!");
-        sessionStorage.setItem("userid", res.data?.userid);
-        navigate("/home");
-      } else {
-        toast.error(res.message);
-      }
-    });
-  };
+ 
 
   const handleLogin = () => {
     const reqbody = {
@@ -43,8 +32,10 @@ function Login() {
       console.log(res, "res");
       if (res.status === 1) {
         toast.success("Login successful!");
+
         sessionStorage.setItem("userid", res.data?.id);
         sessionStorage.setItem("orgid", res.data?.orgid);
+        sessionStorage.setItem("token", res.data?.token);
         navigate("/home");
       } else {
         console.log(res);

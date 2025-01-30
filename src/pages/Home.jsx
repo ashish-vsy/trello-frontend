@@ -10,9 +10,11 @@ function Home() {
   const [userData, setUserdata] = useState({});
   const userid = sessionStorage.getItem('userid');
   const orgid = sessionStorage.getItem('orgid');
+  const token = sessionStorage.getItem('token');
+
 
   useEffect(() => {
-    if (!userid || !orgid || userid === 'undefined' || orgid === 'undefined') {
+    if (!token || !userid || !orgid || userid === 'undefined' || orgid === 'undefined') {
       navigate('/login');
       return;
     }

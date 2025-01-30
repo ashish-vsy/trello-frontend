@@ -28,8 +28,6 @@ function Register() {
     SignUp(reqbody).then((res) => {
       if (res.status) {
         toast.success("Successfully registered!");
-        sessionStorage.setItem("userid", res.data?.id);
-        sessionStorage.setItem("orgid", res.data?.orgid);
         navigate("/login");
       } else {
         toast.error(res.message);
